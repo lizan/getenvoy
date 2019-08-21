@@ -17,12 +17,12 @@ package manifest
 import (
 	"errors"
 	"fmt"
-	"net/url"
-	"regexp"
-	"strings"
-
 	"github.com/tetratelabs/getenvoy-package/api"
 	"github.com/tetratelabs/log"
+	"net/url"
+	"os"
+	"regexp"
+	"strings"
 )
 
 const (
@@ -32,6 +32,9 @@ const (
 
 // NewKey creates a manifest key based on the reference it is given
 func NewKey(reference string) (*Key, error) {
+	if reference == "@" {
+		reference = os.Getenv("GETENVOY_REFERENCE")
+	}
 	r := regexp.MustCompile(`^([\w\d-\._]+):([\w\d-\._]+)/?([\w\d-\._]+)?$`)
 	matches := r.FindStringSubmatch(reference)
 	if len(matches) != 4 {
